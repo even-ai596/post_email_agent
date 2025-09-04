@@ -1,5 +1,5 @@
-from openai import OpenAI,AzureOpenAI
-from langchain_openai import AzureChatOpenAI
+from openai import OpenAI, AzureOpenAI
+from langchain_openai import AzureChatOpenAI, ChatOpenAI
 import os
 from dotenv import load_dotenv
 import os
@@ -51,7 +51,7 @@ import litellm
 # exit()
 # 请确保您已将 API Key 存储在环境变量 ARK_API_KEY 中
 # 初始化Openai客户端，从环境变量中读取您的API Key
-gpt_4_1 = OpenAI(
+gpt_4_1 = ChatOpenAI(
     # 此为默认路径，您可根据业务所在地域进行配置
     base_url=os.getenv("OPENAI_BASE_URL"),
     # 从环境变量中获取您的 API Key
@@ -80,12 +80,4 @@ if __name__ == "__main__":
 
 
 
-    completion = gpt_4_1.chat.completions.create(
-        # 指定您创建的方舟推理接入点 ID，此处已帮您修改为您的推理接入点 ID
-        model="gpt-4.1-2025-04-14",
-        messages=[
-            # {"role": "system", "content": "你是人工智能助手"},
-            {"role": "user", "content": "你好，你是谁？"},
-        ],
-    )
-    print(completion.choices[0].message.content)
+    print(gpt_4_1.invoke("你好，你是谁？"))

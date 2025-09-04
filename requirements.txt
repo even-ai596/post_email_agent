@@ -1,0 +1,14 @@
+playwright==1.52.0
+pydantic == 2.10.6
+aiohttp == 3.11.14
+loguru == 0.7.3
+dotenv == 0.9.9
+langchain-openai == 0.3.18
+dashscope == 1.23.3
+langchain-community == 0.3.24
+langgraph == 0.6.6
+beautifulsoup4 == 4.13.4
+pillow == 11.2.1
+streamlit == 1.45.1
+langchain_anthropic == 0.3.19
+litellm == 1.76.2
