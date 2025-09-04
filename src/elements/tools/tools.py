@@ -1,0 +1,61 @@
+
+from datetime import date
+from pydantic import BaseModel
+from typing import Type
+import requests
+from src.elements.pydantic_models.pydantic_models import Location, Email
+from src.elements.utils.utils import sync_post_email
+from langchain.tools import BaseTool
+
+
+class GetTodayTool(BaseTool):
+    name: str = "get_today_date"
+    description: str = "拿到今天的日期。"
+    args_schema: Type[BaseModel] = None
+
+    def _run(self):
+        return str(date.today())
+
+    async def _arun(self):
+        return self._run()
+
+class PostEmailTool(BaseTool):
+    name: str = "post_email"
+    description: str = "发送邮件"
+    args_schema: Type[BaseModel] = Email
+
+    def _run(self, title: str, recipient: str, text: str):
+        response = sync_post_email(title, recipient, text + "\n\n —— GPT EMAIL AGENT，勿念")
+        return response
+
+        
+    async def _arun(self, title: str, recipient: str, text: str):
+        return await self._run(title, recipient, text)
+
+
+
+class GetWeatherTool(BaseTool):
+    name: str = "get_weather"
+    description: str = "获取天气。"
+    args_schema: Type[BaseModel] = Location
+
+    def _run(self,latitude: float, longitude: float):
+        try:
+            response = requests.get(f"""https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m""")
+        #     coroutine = asyncio.to_thread(
+        #     requests.get,
+        #     f"https://api.open-meteo.com/v1/forecast?"
+        #     f"latitude={latitude}&longitude={longitude}&"
+        #     "current=temperature_2m,wind_speed_10m&"
+        #     "hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
+        # )
+            # response = await asyncio.gather(coroutine)
+            data = response.json()
+            # print(data)
+            return data['current']['temperature_2m']
+        
+        except requests.exceptions.RequestException as e:
+            raise ConnectionError(f"请求天气接口失败: {str(e)}")
+
+    async def _arun(self, latitude: float, longitude: float):
+        return self._run(latitude, longitude)
