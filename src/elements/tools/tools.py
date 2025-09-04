@@ -24,13 +24,13 @@ class PostEmailTool(BaseTool):
     description: str = "发送邮件"
     args_schema: Type[BaseModel] = Email
 
-    def _run(self, title: str, recipient: str, text: str):
-        response = sync_post_email(title, recipient, text + "\n\n —— GPT EMAIL AGENT，勿念")
+    def _run(self, email_title: str, email_recipient: str, email_text: str):
+        response = sync_post_email(email_title, email_recipient, email_text + "\n\n —— GPT EMAIL AGENT，勿念")
         return response
 
         
-    async def _arun(self, title: str, recipient: str, text: str):
-        return await self._run(title, recipient, text)
+    async def _arun(self, email_title: str, email_recipient: str, email_text: str):
+        return await self._run(email_title, email_recipient, email_text)
 
 
 

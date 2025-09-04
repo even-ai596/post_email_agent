@@ -6,7 +6,6 @@ import asyncio
 import os
 from bs4 import BeautifulSoup
 
-
 def extract_author_institutions(html):
     """
     从HTML中提取作者单位信息
@@ -116,7 +115,7 @@ def sync_post_email(title: str, recipient: str, text: str) -> dict:
 
     with sync_playwright() as p:
         browser = p.chromium.launch(
-            headless=True,
+            headless=False,
             timeout=60000,
             args=['--start-maximized']
         )
@@ -131,7 +130,7 @@ def sync_post_email(title: str, recipient: str, text: str) -> dict:
             page.goto(search_url, timeout=60000)
             page.wait_for_timeout(2000)
             
-            username = "liuzl"
+            username = os.getenv("BUPT_EMAIL_USERNAME")
             password = os.getenv("BUPT_EMAIL_PASSWORD")
             
             page.fill('#qquin', username)
@@ -144,17 +143,15 @@ def sync_post_email(title: str, recipient: str, text: str) -> dict:
             # ========== 写信 ==========
             page.click('#composebtn')
             
-            
-            
-            page.wait_for_timeout(4000)
-            # time.sleep(4)
-            
-            # 输入收件人
             compose_frame = None
-            for frame in page.frames:
-                if "compose_wedrive" in frame.url:
-                    compose_frame = frame
-                    break
+            while not compose_frame:
+                for frame in page.frames:
+                    if "compose_wedrive" in frame.url:
+                        compose_frame = frame
+                        break
+
+                page.wait_for_timeout(2000)
+            
             
             if compose_frame is None:
                 raise Exception("没有找到写信 mainFrame")
@@ -188,5 +185,5 @@ async def main():
 if __name__ == "__main__":
     # result = asyncio.run(main())
     # print(result)
-    result = sync_post_email("test", "zilong.liu@shopee.com;", "test_text")
+    result = sync_post_email("test", "zilong.liu@shopee.com;", "test_text——sync")
     print(result)

@@ -1,20 +1,19 @@
-from io import BytesIO
-from httpx import get
-import streamlit as st
-import ast
-from langchain_core.messages import HumanMessage,AIMessage,ToolMessage
+
 from src.agents.agent import email_agent  
-from random import randint
+
+import streamlit as st
+from langchain_core.messages import HumanMessage
+from uuid import uuid4
 from langchain.callbacks.tracers import LangChainTracer
 
 
-tracer = LangChainTracer()
+tracer = LangChainTracer(project_name="email_agent")
 if __name__ == "__main__":
-    thread_id = randint(1,999999)
+    thread_id = str(uuid4())
     config = {"configurable": {"thread_id": thread_id}, "callbacks": [tracer]}
-    st.set_page_config(page_title="AgentDemo", page_icon="", layout="centered", initial_sidebar_state="auto",
+    st.set_page_config(page_title="BUPT Email Agent", page_icon="📧", layout="centered", initial_sidebar_state="auto",
                        menu_items=None)
-    st.title("AgentDemo")
+    st.title("BUPT Email Agent")
     if "config" not in st.session_state.keys():
         st.session_state.config = config
     if "messages" not in st.session_state.keys():
