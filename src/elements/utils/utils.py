@@ -5,6 +5,9 @@ from bs4 import BeautifulSoup
 import asyncio
 import os
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def extract_author_institutions(html):
     """
@@ -138,8 +141,8 @@ def sync_post_email(title: str, recipient: str, text: str) -> dict:
             page.click('.login_btn')
             
             # 等待登录完成
-            page.wait_for_selector('#composebtn', state='visible', timeout=10000)
-            
+            # page.wait_for_selector('#composebtn', state='visible', timeout=10000)
+            page.wait_for_timeout(1000)
             # ========== 写信 ==========
             page.click('#composebtn')
             
@@ -166,16 +169,22 @@ def sync_post_email(title: str, recipient: str, text: str) -> dict:
             time.sleep(0.5)
             page.keyboard.press('Tab')
             page.keyboard.type(text)
-            
+            # compose_frame.fill('#toAreaCtrl input[type="input"]', recipient)
             # ========== 发送邮件 ==========
             compose_frame.wait_for_selector('input[name="sendbtn"]', state="visible", timeout=15000)
             compose_frame.click('input[name="sendbtn"]')
-            time.sleep(5)
-            return {"status": "success", "message": "邮件发送成功"}
+            page.wait_for_timeout(5000)
+            try:
+                # 检测发送状态
+                if compose_frame.is_visible('#sendinfomsg') or compose_frame.is_visible('#sendinfomsg_span'):
+                    return {"status": "success", "message": "邮件发送成功"}
+                return {"status": "error", "message": "邮件发送失败"}
+            except Exception:
+                return {"status": "error", "message": "邮件发送失败"}
 
         except Exception as e:
             print(f"Error occurred: {str(e)}")
-            page.screenshot(path='error_debug.png')
+            # page.screenshot(path='error_debug.png')
             return {"status": "error", "message": f"操作失败: {str(e)}"}
         finally:
             browser.close()
@@ -185,5 +194,5 @@ async def main():
 if __name__ == "__main__":
     # result = asyncio.run(main())
     # print(result)
-    result = sync_post_email("test", "zilong.liu@shopee.com;", "test_text——sync")
+    result = sync_post_email("test", "evengmail.com", "test_text——sync")
     print(result)
