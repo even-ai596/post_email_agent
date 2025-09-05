@@ -4,14 +4,16 @@
 
 ## 启动方式
 
-1. 创建虚拟环境：
+1. 克隆地址：
    ```bash
-   conda create -n email_agent python=3.13
-   conda activate email_agent
+   git clone https://github.com/even-ai596/post_email_agent.git
+   cd post_email_agent
    ```
 
 2. 安装依赖：
    ```bash
+   conda create -n email_agent python=3.13
+   conda activate email_agent
    pip install -r requirements.txt
    ```
 

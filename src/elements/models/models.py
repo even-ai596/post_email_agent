@@ -9,12 +9,12 @@ load_dotenv()
 #     api_key=os.getenv("OPENAI_API_KEY"),
 #     base_url=os.getenv("OPENAI_BASE_URL"),
 # )
-# llm = AzureChatOpenAI(
-#     api_key=os.getenv("AZURE_OPENAI_CHAT_API_KEY"),
-#     azure_endpoint=os.getenv("AZURE_OPENAI_CHAT_ENDPOINT"),
-#     api_version=os.getenv("AZURE_OPENAI_CHAT_API_VERSION"),
-#     azure_deployment="gpt-4o",
-# )
+llm = AzureChatOpenAI(
+    api_key=os.getenv("AZURE_OPENAI_CHAT_API_KEY", ""),
+    azure_endpoint=os.getenv("AZURE_OPENAI_CHAT_ENDPOINT", ""),
+    api_version=os.getenv("AZURE_OPENAI_CHAT_API_VERSION", ""),
+    azure_deployment="gpt-4o",
+)
 # gpt = AzureOpenAI(
 #     api_key=os.getenv("AZURE_OPENAI_CHAT_API_KEY"),
 #     azure_endpoint=os.getenv("AZURE_OPENAI_CHAT_ENDPOINT"),
@@ -32,7 +32,7 @@ load_dotenv()
 # )
 import os
 # from openai import OpenAI
-# from langchain_anthropic import ChatAnthropic
+from langchain_anthropic import ChatAnthropic
 # import litellm
 # os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 # os.environ["OPENAI_BASE_URL"] = os.getenv("OPENAI_BASE_URL")
@@ -53,24 +53,23 @@ import os
 # 初始化Openai客户端，从环境变量中读取您的API Key
 openai_client = ChatOpenAI(
     # 此为默认路径，您可根据业务所在地域进行配置
-    base_url=os.getenv("OPENAI_BASE_URL"),
+    base_url=os.getenv("OPENAI_ASEURL", ""),
     # 从环境变量中获取您的 API Key
-    api_key=os.getenv("OPENAI_API_KEY"),
-    model=os.getenv("OPENAI_MODEL"),
+    api_key=os.getenv("OPENAI_API_KEY", ""),
+    model=os.getenv("OPENAI_MODEL", ""),
 )
 
 
-# claude_sonnet_4 = ChatAnthropic(
-#     api_key=os.getenv("OPENAI_API_KEY"),
-#     base_url=os.getenv("OPENAI_BASE_URL"),
-#     model="claude-sonnet-4@20250514",
-#     temperature=0,
-#     max_tokens=1024,
-#     timeout=None,
-#     max_retries=2,
-#     # other params...
-# )
-
+claude_sonnet_4 = ChatAnthropic(
+    api_key=os.getenv("OPENAI_API_KEY", ""),
+    base_url=os.getenv("OPENAI_BASE_URL", ""),
+    model="claude-sonnet-4@20250514",
+    temperature=0,
+    max_tokens=1024,
+    timeout=None,
+    max_retries=2,
+    # other params...
+)
 # from langchain_google_genai import ChatGoogleGenerativeAI
 
 
@@ -102,4 +101,4 @@ if __name__ == "__main__":
 
 
 
-    print(openai_client.invoke("你好，你是谁？").content)
+    print(claude_sonnet_4.invoke("你好，你是谁？").content)
