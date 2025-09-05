@@ -15,7 +15,7 @@
    pip install -r requirements.txt
    ```
 
-3. 复制环境变量模板，加入OPENAI_API_KEY、OPENAI_BASE_URL、BUPT_EMAIL_USERNAME、BUPT_EMAIL_PASSWORD：
+3. 复制环境变量模板，加入OPENAI_API_KEY、OPENAI_MODEL、OPENAI_BASE_URL、BUPT_EMAIL_USERNAME、BUPT_EMAIL_PASSWORD：
    ```bash
    cp .env_template .env
    ```
