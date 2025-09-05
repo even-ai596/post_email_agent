@@ -1,7 +1,7 @@
 {
     "dependencies": ["."],
     "graphs": {
-      "agent": "./src/agents/agent.py:demo_agent"
+      "agent": "./src/agents/agent.py:email_agent"
     },
     "env": ".env",
     "image_distro": "wolfi"
