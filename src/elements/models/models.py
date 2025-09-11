@@ -1,20 +1,23 @@
+from langchain_core.messages import HumanMessage
 from openai import OpenAI, AzureOpenAI
 from langchain_openai import AzureChatOpenAI, ChatOpenAI
 import os
 from dotenv import load_dotenv
-import os
+import sys
+sys.path.append(os.getcwd())
+from src.elements.tools.tools import tools
 
 load_dotenv()
 # client = OpenAI(
 #     api_key=os.getenv("OPENAI_API_KEY"),
 #     base_url=os.getenv("OPENAI_BASE_URL"),
 # )
-llm = AzureChatOpenAI(
-    api_key=os.getenv("AZURE_OPENAI_CHAT_API_KEY", ""),
-    azure_endpoint=os.getenv("AZURE_OPENAI_CHAT_ENDPOINT", ""),
-    api_version=os.getenv("AZURE_OPENAI_CHAT_API_VERSION", ""),
-    azure_deployment="gpt-4o",
-)
+# gpt4o = AzureChatOpenAI(
+#     api_key=os.getenv("AZURE_OPENAI_CHAT_API_KEY", ""),
+#     azure_endpoint=os.getenv("AZURE_OPENAI_CHAT_ENDPOINT", ""),
+#     api_version=os.getenv("AZURE_OPENAI_CHAT_API_VERSION", ""),
+#     azure_deployment="gpt-4o",
+# )
 # gpt = AzureOpenAI(
 #     api_key=os.getenv("AZURE_OPENAI_CHAT_API_KEY"),
 #     azure_endpoint=os.getenv("AZURE_OPENAI_CHAT_ENDPOINT"),
@@ -60,17 +63,16 @@ openai_client = ChatOpenAI(
 )
 
 
-claude_sonnet_4 = ChatAnthropic(
-    api_key=os.getenv("OPENAI_API_KEY", ""),
-    base_url=os.getenv("OPENAI_BASE_URL", ""),
-    model="claude-sonnet-4@20250514",
-    temperature=0,
-    max_tokens=1024,
-    timeout=None,
-    max_retries=2,
-    # other params...
-)
-# from langchain_google_genai import ChatGoogleGenerativeAI
+# claude_sonnet_4 = ChatAnthropic(
+#     api_key=os.getenv("OPENAI_API_KEY", ""),
+#     base_url=os.getenv("OPENAI_BASE_URL", ""),
+#     model="claude-sonnet-4@20250514",
+#     temperature=0,
+#     max_tokens=1024,
+#     timeout=None,
+#     max_retries=2,
+#     # other params...
+# )
 
 
 
@@ -93,7 +95,19 @@ claude_sonnet_4 = ChatAnthropic(
 # print(response)
     
 # exit()
+# from langchain_google_genai import ChatGoogleGenerativeAI
+# os.environ["GOOGLE_API_KEY"] = os.getenv("OPENAI_API_KEY", "")
 
+
+# gemini = ChatGoogleGenerativeAI(
+#     model="gemini-2.0-flash-001",
+#     # base_url=os.getenv("OPENAI_BASE_URL", ""),
+#     temperature=0,
+#     max_tokens=None,
+#     timeout=None,
+#     max_retries=2,
+#     # other params...
+# )
 if __name__ == "__main__":
     # print(compeletion.choices[0].message.content)
     # print(llm.invoke("你好吗？"))
@@ -101,4 +115,5 @@ if __name__ == "__main__":
 
 
 
-    print(claude_sonnet_4.invoke("你好，你是谁？").content)
+    # print(openai_client.invoke("你好，你是谁？"))
+    print(openai_client.bind_tools(tools).invoke([HumanMessage(content="北京今天的天气怎么样？")]))

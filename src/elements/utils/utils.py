@@ -142,17 +142,23 @@ def sync_post_email(title: str, recipient: str, text: str) -> dict:
             
             # 等待登录完成
             # page.wait_for_selector('#composebtn', state='visible', timeout=10000)
-            page.wait_for_timeout(1000)
-            # ========== 写信 ==========
-            page.click('#composebtn')
+            # page.wait_for_timeout(10000)
             
+            # ========== 写信 ==========
+            while True:
+                if page.is_visible('#composebtn'):
+                    page.click('#composebtn')
+                    
+                    break
+                page.wait_for_timeout(1000)
+
             compose_frame = None
             while not compose_frame:
                 for frame in page.frames:
                     if "compose_wedrive" in frame.url:
                         compose_frame = frame
                         break
-
+                
                 page.wait_for_timeout(2000)
             
             
@@ -162,7 +168,7 @@ def sync_post_email(title: str, recipient: str, text: str) -> dict:
             # ====== 输入收件人 ======
             compose_frame.fill('#toAreaCtrl input[type="input"]', recipient)
             
-            time.sleep(0.5)
+            # time.sleep(0.5)
             page.keyboard.press('Tab')
             time.sleep(0.5)
             page.keyboard.type(title)
@@ -194,5 +200,5 @@ async def main():
 if __name__ == "__main__":
     # result = asyncio.run(main())
     # print(result)
-    result = sync_post_email("test", "evengmail.com", "test_text——sync")
+    result = sync_post_email("test", "e", "test_text——sync")
     print(result)

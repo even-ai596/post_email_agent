@@ -1,3 +1,4 @@
+from langchain_core.tools import InjectedToolArg
 from pydantic import BaseModel, Field
 
 

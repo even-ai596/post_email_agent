@@ -1,5 +1,5 @@
-
-from src.agents.agent import email_agent  
+from src.agents.agent import email_agent
+from src.agents.original import graph
 
 import streamlit as st
 from langchain_core.messages import HumanMessage
@@ -36,12 +36,12 @@ if __name__ == "__main__":
 
         def get_answer_stream():
             last_human_message = HumanMessage(content=user_input)
-            stream = email_agent.stream({"messages": [last_human_message]}, stream_mode="values", config=st.session_state.config)
+            stream = email_agent.stream({"messages": last_human_message}, stream_mode="values", config=st.session_state.config)
             
             for chunk in stream:
                 latest_chunk_info = chunk["messages"][-1]
-                print(chunk)
-                if latest_chunk_info.content and (latest_chunk_info.type == "ai" and not latest_chunk_info.tool_calls):
+                print(chunk["messages"])
+                if latest_chunk_info.content and latest_chunk_info.type == "ai" and not latest_chunk_info.tool_calls:
                     
                     yield latest_chunk_info.content
                 if latest_chunk_info.type == "ai" and latest_chunk_info.tool_calls:
