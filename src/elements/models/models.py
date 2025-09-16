@@ -115,5 +115,5 @@ if __name__ == "__main__":
 
 
 
-    # print(openai_client.invoke("你好，你是谁？"))
-    print(openai_client.bind_tools(tools).invoke([HumanMessage(content="北京今天的天气怎么样？")]))
+    print(openai_client.invoke("你好，你是谁？"))
+    # print(openai_client.bind_tools(tools).invoke([HumanMessage(content="北京今天的天气怎么样？")]))

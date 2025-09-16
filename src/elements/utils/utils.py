@@ -44,7 +44,7 @@ async def async_post_email(title: str, recipient: str, text: str) -> dict:
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(
-            headless=False,
+            headless=True,
             timeout=60000,
             args=['--start-maximized']
         )
@@ -118,7 +118,7 @@ def sync_post_email(title: str, recipient: str, text: str) -> dict:
 
     with sync_playwright() as p:
         browser = p.chromium.launch(
-            headless=False,
+            headless=True,
             timeout=60000,
             args=['--start-maximized']
         )
