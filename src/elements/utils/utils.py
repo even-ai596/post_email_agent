@@ -7,7 +7,7 @@ import os
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-load_dotenv()
+
 
 def extract_author_institutions(html):
     """
@@ -194,8 +194,8 @@ def sync_post_email(title: str, recipient: str, text: str) -> dict:
             return {"status": "error", "message": f"操作失败: {str(e)}"}
         finally:
             browser.close()
-async def main():
-    return await async_post_email("test", "zilong.liu@shopee.com;", "test_text")
+# async def main():
+#     return await async_post_email("test", "zilong.liu@shopee.com;", "test_text")
 
 if __name__ == "__main__":
     # result = asyncio.run(main())

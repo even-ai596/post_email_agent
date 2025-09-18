@@ -1,3 +1,4 @@
+import asyncio
 from src.agents.agent import email_agent
 from src.agents.original import graph
 
@@ -34,25 +35,43 @@ if __name__ == "__main__":
             st.markdown(user_input)
         statu_container = st.container(border=True)
 
-        def get_answer_stream():
-            last_human_message = HumanMessage(content=user_input)
-            stream = email_agent.stream({"messages": last_human_message}, stream_mode="values", config=st.session_state.config)
+        # def get_answer_stream():
+        #     last_human_message = HumanMessage(content=user_input)
+        #     stream = email_agent.stream({"messages": last_human_message}, stream_mode="values", config=st.session_state.config)
             
-            for chunk in stream:
+        #     for chunk in stream:
+        #         latest_chunk_info = chunk["messages"][-1]
+        #         print(chunk["messages"])
+        #         if latest_chunk_info.content and latest_chunk_info.type == "ai" and not latest_chunk_info.tool_calls:
+                    
+        #             yield latest_chunk_info.content
+        #         if latest_chunk_info.type == "ai" and latest_chunk_info.tool_calls:
+        #             called_tool_zh_names = [a_tool for a_tool in latest_chunk_info.tool_calls]
+
+        #             statu_container.markdown("\n\n正在使用" + called_tool_zh_names[-1]["name"] + "\n\n参数为：" + str(latest_chunk_info.tool_calls[0]["args"]))
+        #         if latest_chunk_info.type == "tool" and latest_chunk_info.content:
+        #             statu_container.markdown(
+        #             "使用 " + latest_chunk_info.name + " 后获得了如下信息：\n\n" + latest_chunk_info.content)
+        async def get_answer_stream():
+            last_human_message = HumanMessage(content=user_input)
+            stream = email_agent.astream({"messages": last_human_message}, stream_mode="values", config=st.session_state.config)
+            async for chunk in stream:
                 latest_chunk_info = chunk["messages"][-1]
                 print(chunk["messages"])
                 if latest_chunk_info.content and latest_chunk_info.type == "ai" and not latest_chunk_info.tool_calls:
-                    
-                    yield latest_chunk_info.content
+                    return latest_chunk_info.content
                 if latest_chunk_info.type == "ai" and latest_chunk_info.tool_calls:
                     called_tool_zh_names = [a_tool for a_tool in latest_chunk_info.tool_calls]
-
                     statu_container.markdown("\n\n正在使用" + called_tool_zh_names[-1]["name"] + "\n\n参数为：" + str(latest_chunk_info.tool_calls[0]["args"]))
                 if latest_chunk_info.type == "tool" and latest_chunk_info.content:
                     statu_container.markdown(
-                    "使用 " + latest_chunk_info.name + " 后获得了如下信息：\n\n" + latest_chunk_info.content)
+                        "使用 " + latest_chunk_info.name + " 后获得了如下信息：\n\n" + latest_chunk_info.content)
         
-        answer = next(get_answer_stream())
+        async def main():
+            return await (get_answer_stream())
+        answer = asyncio.run(main())
+        # asyncio.run(main())
+        # answer = anext(get_answer_stream())
         with st.chat_message("assistant"):
             st.markdown(answer)
         # answer = st.write_stream(get_answer_stream())

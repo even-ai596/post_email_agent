@@ -1,4 +1,5 @@
 
+import asyncio
 import os
 import sys
 sys.path.append(os.getcwd())
@@ -10,6 +11,10 @@ from src.elements.tools.tools import tools
 from langchain_core.tracers.langchain import wait_for_all_tracers
 
 memory = MemorySaver()
+from langchain_mcp_adapters.client import MultiServerMCPClient
+
+    
+
 
 
 
@@ -54,5 +59,40 @@ if __name__ == "__main__":
 
         # print(res)
         # print(next(get_answer_stream(state)))
-        state = email_agent.invoke({"messages":{"role":"user","content":"北京今天的天气怎么样？"}}, config = config)
-        # print(((state)))
+
+
+        async def get_answer_stream(async_generator):
+            async for chunk in async_generator:
+                print(chunk["messages"])
+                latest_chunk_info = chunk["messages"][-1]
+
+                if latest_chunk_info.content and latest_chunk_info.type == "ai":
+                    
+                    yield latest_chunk_info.content
+                if latest_chunk_info.type == "ai" and latest_chunk_info.tool_calls:
+                    called_tool_zh_names = [a_tool for a_tool in latest_chunk_info.tool_calls]
+
+                    print("\n\n正在使用" + called_tool_zh_names[-1]["name"] + "\n\n参数为：" + str(latest_chunk_info.tool_calls[0]["args"]))
+                if latest_chunk_info.type == "tool" and latest_chunk_info.content:
+                    print(
+                    "使用 " + latest_chunk_info.name + " 后获得了如下信息：\n\n" + latest_chunk_info.content)
+        
+        
+        state = email_agent.astream({"messages":[{"role":"user","content":"今天是几号"}]}, config = config, stream_mode="values")
+        async def main():
+            res = await anext(get_answer_stream(state))
+            print(res)
+        asyncio.run(main())
+        
+
+        # async def main():
+        #         state = email_agent.astream({"messages":{"role":"user","content":"今天是几号"}}, config = config, stream_mode="values")
+        # #     async for chunk in state:
+        # #         print(chunk)
+        #         print(await anext(state))
+        #         print(await anext(state))
+        #         print(await anext(state))
+        #         print(await anext(state))
+              
+        # asyncio.run(main())
+        

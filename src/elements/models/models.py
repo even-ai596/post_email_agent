@@ -5,19 +5,33 @@ import os
 from dotenv import load_dotenv
 import sys
 sys.path.append(os.getcwd())
-from src.elements.tools.tools import tools
+
 
 load_dotenv()
 # client = OpenAI(
 #     api_key=os.getenv("OPENAI_API_KEY"),
 #     base_url=os.getenv("OPENAI_BASE_URL"),
+    
 # )
+# completion = client.chat.completions.create(
+#     model="gpt-5-2025-08-07",
+#     messages=[
+#         {
+#             "role": "user",
+#             "content": "你是谁？",
+#         }
+#     ],
+# )
+# print(completion.choices[0].message.content)
+# exit()
 # gpt4o = AzureChatOpenAI(
 #     api_key=os.getenv("AZURE_OPENAI_CHAT_API_KEY", ""),
 #     azure_endpoint=os.getenv("AZURE_OPENAI_CHAT_ENDPOINT", ""),
 #     api_version=os.getenv("AZURE_OPENAI_CHAT_API_VERSION", ""),
 #     azure_deployment="gpt-4o",
 # )
+# gpt4o.invoke("你好，你是谁？")
+
 # gpt = AzureOpenAI(
 #     api_key=os.getenv("AZURE_OPENAI_CHAT_API_KEY"),
 #     azure_endpoint=os.getenv("AZURE_OPENAI_CHAT_ENDPOINT"),

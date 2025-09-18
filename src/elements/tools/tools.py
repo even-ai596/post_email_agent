@@ -1,4 +1,6 @@
 
+import asyncio
+import os
 from datetime import date
 from pydantic import BaseModel
 from typing import Type
@@ -48,7 +50,19 @@ def GetWeatherTool(loc: Location) -> str:
     # print(data)
     return data['current']['temperature_2m']
 
-tools = ([GetTodayTool(), GetWeatherTool, PostEmailTool()])
+from langchain_mcp_adapters.sessions import SSEConnection
+from langchain_mcp_adapters.client import MultiServerMCPClient
+print(os.getenv("12306_MCP_URL"))
+client = MultiServerMCPClient(
+    {
+        "12306": SSEConnection(url=os.getenv("12306_MCP_URL"), transport="sse")
+    }
+)
+# 同步化获取工具列表
+def sync_get_12306_tools():
+    return asyncio.run(client.get_tools())
+    
+tools = ([GetWeatherTool, PostEmailTool()] + sync_get_12306_tools())
 
 
 # class GetWeatherTool(BaseTool):
