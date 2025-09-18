@@ -61,8 +61,11 @@ client = MultiServerMCPClient(
 # 同步化获取工具列表
 def sync_get_12306_tools():
     return asyncio.run(client.get_tools())
-    
-tools = ([GetWeatherTool, PostEmailTool()] + sync_get_12306_tools())
+
+async def async_get_12306_tools():
+    return await client.get_tools()
+
+tools = ([GetWeatherTool, PostEmailTool()] + asyncio.run(client.get_tools()))
 
 
 # class GetWeatherTool(BaseTool):

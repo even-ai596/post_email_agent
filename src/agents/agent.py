@@ -78,7 +78,7 @@ if __name__ == "__main__":
                     "使用 " + latest_chunk_info.name + " 后获得了如下信息：\n\n" + latest_chunk_info.content)
         
         
-        state = email_agent.astream({"messages":[{"role":"user","content":"今天是几号"}]}, config = config, stream_mode="values")
+        state = email_agent.astream({"messages":[{"role":"user","content":"查询2025/10/03北京到芜湖的火车票"}]}, config = config, stream_mode="values")
         async def main():
             res = await anext(get_answer_stream(state))
             print(res)
