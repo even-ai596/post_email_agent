@@ -35,20 +35,20 @@ class PostEmailTool(BaseTool):
     async def _arun(self, email_title: str, email_recipient: str, email_text: str):
         return await self._run(email_title, email_recipient, email_text)
 
-@tool(description="获取某个地区的天气")
-def GetWeatherTool(loc: Location) -> str:
-    response = requests.get(f"""https://api.open-meteo.com/v1/forecast?latitude={loc.latitude}&longitude={loc.longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m""")
-        #     coroutine = asyncio.to_thread(
-        #     requests.get,
-        #     f"https://api.open-meteo.com/v1/forecast?"
-        #     f"latitude={latitude}&longitude={longitude}&"
-        #     "current=temperature_2m,wind_speed_10m&"
-        #     "hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
-        # )
-            # response = await asyncio.gather(coroutine)
-    data = response.json()
-    # print(data)
-    return data['current']['temperature_2m']
+# @tool(description="获取某个地区的天气")
+# def GetWeatherTool(loc: Location) -> str:
+#     response = requests.get(f"""https://api.open-meteo.com/v1/forecast?latitude={loc.latitude}&longitude={loc.longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m""")
+#         #     coroutine = asyncio.to_thread(
+#         #     requests.get,
+#         #     f"https://api.open-meteo.com/v1/forecast?"
+#         #     f"latitude={latitude}&longitude={longitude}&"
+#         #     "current=temperature_2m,wind_speed_10m&"
+#         #     "hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
+#         # )
+#             # response = await asyncio.gather(coroutine)
+#     data = response.json()
+#     # print(data)
+#     return data['current']['temperature_2m']
 
 from langchain_mcp_adapters.sessions import SSEConnection
 from langchain_mcp_adapters.client import MultiServerMCPClient
@@ -60,36 +60,36 @@ client = MultiServerMCPClient(
 )
 # 同步化获取工具列表
 def sync_get_12306_tools():
-    return asyncio.run(client.get_tools())
+    return asyncio.run(client.get_tools("12306"))
 
 async def async_get_12306_tools():
-    return await client.get_tools()
-
-tools = ([GetWeatherTool, PostEmailTool()] + asyncio.run(client.get_tools()))
+    return await client.get_tools("12306")
 
 
-# class GetWeatherTool(BaseTool):
-#     name: str = "get_weather"
-#     description: str = "获取天气。"
-#     args_schema: Type[BaseModel] = Location
 
-#     def _run(self,latitude: float, longitude: float):
-#         try:
-#             response = requests.get(f"""https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m""")
-#         #     coroutine = asyncio.to_thread(
-#         #     requests.get,
-#         #     f"https://api.open-meteo.com/v1/forecast?"
-#         #     f"latitude={latitude}&longitude={longitude}&"
-#         #     "current=temperature_2m,wind_speed_10m&"
-#         #     "hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
-#         # )
-#             # response = await asyncio.gather(coroutine)
-#             data = response.json()
-#             # print(data)
-#             return data['current']['temperature_2m']
+class GetWeatherTool(BaseTool):
+    name: str = "get_weather"
+    description: str = "获取天气。"
+    args_schema: Type[BaseModel] = Location
+
+    def _run(self,latitude: float, longitude: float):
+        try:
+            response = requests.get(f"""https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m""")
+        #     coroutine = asyncio.to_thread(
+        #     requests.get,
+        #     f"https://api.open-meteo.com/v1/forecast?"
+        #     f"latitude={latitude}&longitude={longitude}&"
+        #     "current=temperature_2m,wind_speed_10m&"
+        #     "hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
+        # )
+            # response = await asyncio.gather(coroutine)
+            data = response.json()
+            # print(data)
+            return data['current']['temperature_2m']
         
-#         except requests.exceptions.RequestException as e:
-#             raise ConnectionError(f"请求天气接口失败: {str(e)}")
+        except requests.exceptions.RequestException as e:
+            raise ConnectionError(f"请求天气接口失败: {str(e)}")
 
-#     async def _arun(self, latitude: float, longitude: float):
-#         return self._run(latitude, longitude)
+    async def _arun(self, latitude: float, longitude: float):
+        return self._run(latitude, longitude)
+tools = ([GetWeatherTool(), PostEmailTool()] + asyncio.run(client.get_tools(server_name = "12306")))

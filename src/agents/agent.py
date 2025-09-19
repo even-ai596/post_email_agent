@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+# =====================
+#
+#
+# Author: lizilong
+# Date: 2025/9/19
+# Source Code: https://github.com/langchain-ai/langgraph/
+# =====================
 
 import asyncio
 import os
@@ -68,7 +76,7 @@ if __name__ == "__main__":
 
                 if latest_chunk_info.content and latest_chunk_info.type == "ai":
                     
-                    yield latest_chunk_info.content
+                    return latest_chunk_info.content
                 if latest_chunk_info.type == "ai" and latest_chunk_info.tool_calls:
                     called_tool_zh_names = [a_tool for a_tool in latest_chunk_info.tool_calls]
 
@@ -78,11 +86,11 @@ if __name__ == "__main__":
                     "使用 " + latest_chunk_info.name + " 后获得了如下信息：\n\n" + latest_chunk_info.content)
         
         
-        state = email_agent.astream({"messages":[{"role":"user","content":"查询2025/10/03北京到芜湖的火车票"}]}, config = config, stream_mode="values")
-        async def main():
-            res = await anext(get_answer_stream(state))
-            print(res)
-        asyncio.run(main())
+        state = email_agent.astream({"messages":[{"role":"user","content":"北京天气，经纬度为116.46,39.92"}]}, config = config, stream_mode="values")
+        # async def main():
+        #     res = await anext(get_answer_stream(state))
+        #     print(res)
+        asyncio.run(get_answer_stream(state))
         
 
         # async def main():
