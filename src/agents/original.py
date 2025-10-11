@@ -4,19 +4,20 @@
 #
 # Author: liuzilong
 # Date: 2025/9/19
-# Source Code: https://github.com/langchain-ai/langgraph/
 # =====================
 
 
+import asyncio
 import os
 import sys
 
 from langchain_core.language_models import BaseChatModel
 sys.path.append(os.getcwd())
 
-from src.elements.tools.tools import tools
-from src.elements.models.models import openai_client
 
+
+from src.elements.models.models import openai_client
+from src.elements.tools.tools import tools
 from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 from langgraph.graph import START, StateGraph, END
 from langgraph.prebuilt import ToolNode, tools_condition
@@ -91,8 +92,31 @@ system_prompt = f'''你是一个天气、日期查询助手兼邮件助手，用
 1、如果用户的需求需要调用多个工具，你需要按照用户的需求顺序调用相应的工具，每次只给出一个工具的输入参数，观察这个工具返回的结果后，再决定是否继续调用其他工具，如果用户的需求被满足，则停止调用工具。
 2、在邮件发送时，正文内容每行使用\\n\\n分割，**不要使用结束语和署名**，因为邮件发送工具会自动添加结束语和署名。
 3、邮件工具的输入参数需要按照Email模型的定义进行输入，包括email_title、email_recipient、email_text，不要缺失参数'''
+config = {"configurable": {"thread_id": "123"}}
 
 graph = Agent(openai_client, tools, memory, system_prompt).graph
 if __name__ == "__main__":
-    state = graph.invoke({"messages": [HumanMessage(content="今天是几号？")]}, config={"configurable": {"thread_id": "123"}})
-    print(state)
+    # state = graph.invoke({"messages": [HumanMessage(content="今天是几号？")]}, config={"configurable": {"thread_id": "123"}})
+    # print(state)
+    async def get_answer_stream(async_generator):
+        async for chunk in async_generator:
+            print(chunk["messages"])
+            latest_chunk_info = chunk["messages"][-1]
+
+            if latest_chunk_info.content and latest_chunk_info.type == "ai":
+                
+                return latest_chunk_info.content
+            if latest_chunk_info.type == "ai" and latest_chunk_info.tool_calls:
+                called_tool_zh_names = [a_tool for a_tool in latest_chunk_info.tool_calls]
+
+                print("\n\n正在使用" + called_tool_zh_names[-1]["name"] + "\n\n参数为：" + str(latest_chunk_info.tool_calls[0]["args"]))
+            if latest_chunk_info.type == "tool" and latest_chunk_info.content:
+                print(
+                "使用 " + latest_chunk_info.name + " 后获得了如下信息：\n\n" + latest_chunk_info.content)
+    
+    
+    state = graph.astream({"messages":[{"role":"user","content":"北京天气，经纬度为116.46,39.92"}]}, config = config, stream_mode="values")
+    # async def main():
+    #     res = await anext(get_answer_stream(state))
+    #     print(res)
+    asyncio.run(get_answer_stream(state))

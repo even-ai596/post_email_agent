@@ -17,7 +17,6 @@ async def stream(request: Request):
         "url": request.url,
         "cookies": request.cookies,
     }
-
 @app.get("/")
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "message": "Hello, World!"})

@@ -5,9 +5,10 @@ from langchain_openai import AzureChatOpenAI, ChatOpenAI
 import os
 from dotenv import load_dotenv
 import sys
+
 sys.path.append(os.getcwd())
 
-
+from litellm import acompletion
 load_dotenv()
 # client = OpenAI(
 #     api_key=os.getenv("OPENAI_API_KEY"),
@@ -25,12 +26,12 @@ load_dotenv()
 # )
 # print(completion.choices[0].message.content)
 # exit()
-# gpt4o = AzureChatOpenAI(
-#     api_key=os.getenv("AZURE_OPENAI_CHAT_API_KEY", ""),
-#     azure_endpoint=os.getenv("AZURE_OPENAI_CHAT_ENDPOINT", ""),
-#     api_version=os.getenv("AZURE_OPENAI_CHAT_API_VERSION", ""),
-#     azure_deployment="gpt-4o",
-# )
+gpt4o = AzureChatOpenAI(
+    api_key=os.getenv("AZURE_OPENAI_CHAT_API_KEY", ""),
+    azure_endpoint=os.getenv("AZURE_OPENAI_CHAT_ENDPOINT", ""),
+    api_version=os.getenv("AZURE_OPENAI_CHAT_API_VERSION", ""),
+    azure_deployment="gpt-4o",
+)
 # gpt4o.invoke("你好，你是谁？")
 
 # gpt = AzureOpenAI(
@@ -39,7 +40,7 @@ load_dotenv()
 #     api_version=os.getenv("AZURE_OPENAI_CHAT_API_VERSION"),
 #     azure_deployment="gpt-4o",
 # )
-# compeletion = gpt.chat.completions.create(
+# completion = gpt.chat.completions.create(
 #     messages=[
 #         {
 #             "role": "user",
@@ -49,6 +50,7 @@ load_dotenv()
 #     model="gpt-4o",
 # )
 import os
+
 # from openai import OpenAI
 from langchain_anthropic import ChatAnthropic
 # import litellm
@@ -123,12 +125,56 @@ openai_client = ChatOpenAI(
 #     max_retries=2,
 #     # other params...
 # )
+
+async def ask_llm(messages, model, temperature = 0, top_p = 1, stream = False, extra_headers = None, **kwargs):
+    response = await acompletion(
+        messages=messages,
+        model=model,
+        temperature=temperature,
+        top_p=top_p,
+        stream=stream,
+        extra_headers=extra_headers,
+        **kwargs
+    )
+    if stream:
+        async for chunk in response:
+            yield chunk
+    else:
+        yield response.choices[0].message.content
+
+
 if __name__ == "__main__":
     # print(compeletion.choices[0].message.content)
     # print(llm.invoke("你好吗？"))
     # print(claude_sonnet_4.invoke("你好,你是谁"))
 
-
-
-    print(asyncio.run(openai_client.ainvoke("你好，你是谁？")))
+    # print(openai_client.invoke("你好，你是谁？"))
+    # print(asyncio.run(openai_client.ainvoke("你好，你是谁？")))
     # print(openai_client.bind_tools(tools).invoke([HumanMessage(content="北京今天的天气怎么样？")]))
+    import asyncio
+
+    
+    messages = [{"role": "user", "content": "写一首诗"}]
+        
+    #     response = await acompletion(
+    #     messages=messages,
+    #     model="gpt-4.1",
+    #     temperature=0.5,
+    #     top_p=1,
+    #     stream=False,
+    #     extra_headers=None,
+   
+    # )
+        
+        # for chunk in response:
+        #     if chunk.choices and chunk.choices[0].delta.content:
+        #         print(chunk.choices[0].delta.content, end="", flush=True)
+    # print(asyncio.run(acompletion("gpt-4.1", messages)))
+
+    
+    
+    async def main():
+        stream = await acompletion("gpt-4.1", messages, stream=True)
+        async for chunk in stream:
+            print(chunk.choices[0].delta.content, sep=",", end="", flush=True)
+    asyncio.run(main())

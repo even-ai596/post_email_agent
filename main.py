@@ -65,8 +65,9 @@ if __name__ == "__main__":
                     statu_container.markdown("\n\n正在使用" + called_tool_zh_names[-1]["name"] + "\n\n参数为：" + str(latest_chunk_info.tool_calls[0]["args"]))
                 if latest_chunk_info.type == "tool" and latest_chunk_info.content:
                     statu_container.markdown(
+
                         "使用 " + latest_chunk_info.name + " 后获得了如下信息：\n\n" + latest_chunk_info.content)
-        
+
         async def main():
             return await (get_answer_stream())
         answer = asyncio.run(main())

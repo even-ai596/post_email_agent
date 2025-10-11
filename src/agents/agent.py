@@ -4,7 +4,6 @@
 #
 # Author: liuzilong
 # Date: 2025/9/19
-# Source Code: https://github.com/langchain-ai/langgraph/
 # =====================
 
 import asyncio
@@ -14,7 +13,7 @@ sys.path.append(os.getcwd())
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 
-from src.elements.models.models import openai_client
+from src.elements.models.models import openai_client, gpt4o
 from src.elements.tools.tools import tools
 from langchain_core.tracers.langchain import wait_for_all_tracers
 
@@ -32,7 +31,7 @@ system_prompt = f'''你是一个天气、日期查询助手兼邮件助手，用
 2、在邮件发送时，正文内容每行使用\\n\\n分割，**不要使用结束语和署名**，因为邮件发送工具会自动添加结束语和署名。
 3、邮件工具的输入参数需要按照Email模型的定义进行输入，包括email_title、email_recipient、email_text，不要缺失参数'''
 
-email_agent = create_react_agent(model=openai_client, tools=tools,checkpointer=memory,prompt=system_prompt,
+email_agent = create_react_agent(model=gpt4o, tools=tools,checkpointer=memory,prompt=system_prompt,
                                     debug=False)
 
 from langchain.callbacks.tracers import LangChainTracer
@@ -90,7 +89,7 @@ if __name__ == "__main__":
         # async def main():
         #     res = await anext(get_answer_stream(state))
         #     print(res)
-        asyncio.run(get_answer_stream(state))
+        print(asyncio.run(get_answer_stream(state)))
         
 
         # async def main():

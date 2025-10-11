@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="shopee-test" uuid="107d1c54-d1cd-41c6-8df9-45016b62daa6">
+      <driver-ref>mysql.cloud_sql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <remarks>shopee-test</remarks>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://master.bea82e5eb9804f11.mysql.cloud.test.shopee.io:6606/shopee_di_knowledge_base_db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="@localhost" uuid="adfd72a6-354b-4a46-8ab9-ae863cb29ac3">
+      <driver-ref>mysql.9</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="shopee_di_rag_db@master.e821f28ca694983e.mysql.cloud.test.shopee.io" uuid="5f2fcb83-35b7-4490-b47b-1157755e8133">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://master.e821f28ca694983e.mysql.cloud.test.shopee.io:6606/shopee_di_rag_db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>
