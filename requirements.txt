@@ -6,7 +6,7 @@ dotenv == 0.9.9
 langchain-openai == 0.3.18
 dashscope == 1.23.3
 langchain-community == 0.3.24
-langgraph == 0.6.10
+langgraph == 0.6.7
 beautifulsoup4 == 4.13.4
 pillow == 11.2.1
 streamlit == 1.45.1
